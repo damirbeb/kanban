@@ -18,10 +18,18 @@ public class TaskManager {
     }
 
     //Creating a connection with database
+    // Method: connect
+    // Description: Creates a connection with the PostgreSQL database.
+    // Parameters: None
+    // Returns: Connection object representing the connection to the database.
     public static Connection connect() throws SQLException {
         return DriverManager.getConnection(conURL, "postgres", "1");
     }
 
+    // Method: addTask
+    // Description: Adds a task to the database.
+    // Parameters: Task object representing the task to be added.
+    // Returns: Void
     public static void addTask(Task task) {
         try (Connection connection = connect();
              PreparedStatement preparedStatement = connection.prepareStatement(
@@ -40,6 +48,10 @@ public class TaskManager {
         }
     }
 
+    // Method: getTasksByStatus
+    // Description: Retrieves tasks from the database based on their status.
+    // Parameters: String status representing the status of tasks to retrieve.
+    // Returns: List of Task objects that match the provided status.
     public static List<Task> getTasksByStatus(String status) {
         List<Task> tasks = new ArrayList<>();
         try (Connection connection = connect();
@@ -61,4 +73,18 @@ public class TaskManager {
         return tasks;
     }
 
+    // Method: updateTaskStatus
+    public static void updateTaskStatus(int taskId, String newStatus) {
+        try (Connection connection = connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "UPDATE tasks SET status = ? WHERE id = ?")) {
+
+            preparedStatement.setString(1, newStatus);
+            preparedStatement.setInt(2, taskId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
