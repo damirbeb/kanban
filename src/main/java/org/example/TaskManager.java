@@ -73,6 +73,19 @@ public class TaskManager {
         return tasks;
     }
 
+    // Method: updateTaskStatus
+    public static void updateTaskStatus(int taskId, String newStatus) {
+        try (Connection connection = connect();
+             PreparedStatement preparedStatement = connection.prepareStatement(
+                     "UPDATE tasks SET status = ? WHERE id = ?")) {
 
+            preparedStatement.setString(1, newStatus);
+            preparedStatement.setInt(2, taskId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
